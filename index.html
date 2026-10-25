@@ -5,6 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Manhattan hotellari — xarita</title>
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css">
 <style>
   * { box-sizing: border-box; }
   body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
@@ -15,7 +17,7 @@
   .filters button { padding: 8px 14px; border: 1px solid #d1d5db; background: #fff; border-radius: 999px; cursor: pointer; font-size: 14px; }
   .filters button.active { background: #111827; color: #fff; border-color: #111827; }
   .layout { display: flex; height: calc(100vh - 132px); min-height: 420px; }
-  #map { flex: 1; }
+  #map { flex: 1; min-height: 420px; background: #e5e7eb; }
   aside { width: 340px; max-width: 42vw; overflow-y: auto; border-left: 1px solid #e5e7eb; background: #fff; }
   .hotel { padding: 14px 16px; border-bottom: 1px solid #eee; cursor: pointer; }
   .hotel:hover { background: #f9fafb; }
@@ -33,7 +35,7 @@
 <body>
 <header>
   <h1>🏨 Manhattan hotellari</h1>
-  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Ro'yxatdagi hotelni bossangiz, xarita o'sha yerga boradi.</p>
+  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Yaqin hotellar bitta raqamli belgida yig'ilgan — ustiga bossangiz ochiladi. Ro'yxatdagi hotelni bossangiz, xarita o'sha yerga boradi. Xaritani kattalashtirish uchun + / − tugmalarini ishlating.</p>
 </header>
 <div class="filters">
   <button data-filter="all" class="active">Hammasi (8)</button>
@@ -45,6 +47,7 @@
   <aside id="list"></aside>
 </div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
 <script>
 const HOTELS = [
   { name: "Pod Times Square", area: "Midtown", lat: 40.75846556, lng: -73.99308539, address: "400 W 42nd St, New York, NY 10036", rating: "4.3 ★ (1,867 ta sharh)", price: "O'rtacha", phone: "+1 844-763-7666", site: "https://www.thepodhotel.com/pod-times-square" },
@@ -57,18 +60,24 @@ const HOTELS = [
   { name: "The Wall Street Hotel", area: "Downtown", lat: 40.707435, lng: -74.006017, address: "1 Platt St, New York, NY 10038", rating: "9.6 (Expedia)", price: "O'rtacha", phone: "+1 212-419-2618", site: "" }
 ];
 
-const map = L.map("map").setView([40.741, -73.995], 13);
+const map = L.map("map", { scrollWheelZoom: false }).setView([40.741, -73.995], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
   attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
 }).addTo(map);
+map.attributionControl.setPrefix(false);
+setTimeout(() => map.invalidateSize(), 300);
+window.addEventListener("load", () => map.invalidateSize());
 
 const markers = {};
+const cluster = L.markerClusterGroup();
 HOTELS.forEach(h => {
   const popup = `<b>${h.name}</b><br>${h.area} · ${h.rating}<br>${h.address}<br>${h.phone}${h.site ? `<br><a href="${h.site}" target="_blank" rel="noopener">Rasmiy sayt</a>` : ""}`;
-  const m = L.marker([h.lat, h.lng]).addTo(map).bindPopup(popup);
+  const m = L.marker([h.lat, h.lng]).bindPopup(popup);
+  cluster.addLayer(m);
   markers[h.name] = m;
 });
+map.addLayer(cluster);
 
 const listEl = document.getElementById("list");
 function render(filter) {
@@ -78,8 +87,7 @@ function render(filter) {
     div.className = "hotel";
     div.innerHTML = `<h3>${h.name}</h3><div class="meta"><span class="rating">${h.rating}</span> · ${h.area} · ${h.price}<br>${h.address}<br>${h.phone}${h.site ? `<br><a href="${h.site}" target="_blank" rel="noopener">Rasmiy sayt</a>` : ""}</div>`;
     div.onclick = () => {
-      map.flyTo([h.lat, h.lng], 16, { duration: 0.8 });
-      markers[h.name].openPopup();
+      cluster.zoomToShowLayer(markers[h.name], () => markers[h.name].openPopup());
     };
     listEl.appendChild(div);
   });
