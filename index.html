@@ -13,10 +13,13 @@
   header { padding: 14px 16px; background: #111827; color: #fff; }
   header h1 { margin: 0; font-size: 20px; }
   header p { margin: 4px 0 0; color: #d1d5db; font-size: 14px; }
+  .modes { padding: 10px 16px; display: flex; gap: 8px; background: #111827; border-top: 1px solid #374151; }
+  .modes button { padding: 9px 18px; border: 1px solid #4b5563; background: transparent; color: #fff; border-radius: 999px; cursor: pointer; font-size: 15px; font-weight: 600; }
+  .modes button.active { background: #dc2626; border-color: #dc2626; }
   .filters { padding: 10px 16px; display: flex; gap: 8px; flex-wrap: wrap; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
   .filters button { padding: 8px 14px; border: 1px solid #d1d5db; background: #fff; border-radius: 999px; cursor: pointer; font-size: 14px; }
   .filters button.active { background: #111827; color: #fff; border-color: #111827; }
-  .layout { display: flex; height: calc(100vh - 132px); min-height: 420px; }
+  .layout { display: flex; height: calc(100vh - 178px); min-height: 420px; }
   #map { flex: 1; min-height: 420px; background: #e5e7eb; }
   aside { width: 340px; max-width: 42vw; overflow-y: auto; border-left: 1px solid #e5e7eb; background: #fff; }
   .hotel { padding: 14px 16px; border-bottom: 1px solid #eee; cursor: pointer; }
@@ -25,6 +28,21 @@
   .hotel .meta { color: #6b7280; font-size: 13px; line-height: 1.5; }
   .hotel .rating { color: #b45309; font-weight: 600; }
   .hotel a { color: #2563eb; }
+  .tochka-row { padding: 14px 16px; border-bottom: 1px solid #eee; cursor: pointer; display: flex; gap: 12px; align-items: center; }
+  .tochka-row:hover { background: #fef2f2; }
+  .tochka-badge { flex: 0 0 auto; width: 52px; height: 52px; border-radius: 50%; background: #dc2626; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .tochka-badge .tb-count { font-size: 16px; font-weight: 800; line-height: 1; }
+  .tochka-badge .tb-name { font-size: 9px; margin-top: 2px; }
+  .tochka-row h3 { margin: 0 0 4px; font-size: 15px; }
+  .tochka-row .meta { color: #6b7280; font-size: 13px; line-height: 1.5; }
+  .tochka-marker { width: 58px; height: 58px; border-radius: 50%; background: #dc2626; color: #fff; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.45); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .tochka-marker .tm-count { font-size: 17px; font-weight: 800; line-height: 1; }
+  .tochka-marker .tm-name { font-size: 9px; margin-top: 2px; }
+  .tochka-cluster { width: 56px; height: 56px; border-radius: 50%; background: #7c2d12; color: #fff; border: 3px solid #fff; box-shadow: 0 2px 8px rgba(0,0,0,.45); display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .tochka-cluster .tc-num { font-size: 16px; font-weight: 800; line-height: 1; }
+  .tochka-cluster .tc-label { font-size: 9px; margin-top: 2px; }
+  .tochka-popup ul { margin: 6px 0 0; padding-left: 18px; }
+  .tochka-popup li { font-size: 13px; line-height: 1.6; }
   @media (max-width: 700px) {
     .layout { flex-direction: column; height: auto; }
     #map { height: 420px; min-height: 420px; }
@@ -35,9 +53,13 @@
 <body>
 <header>
   <h1>🏨 Manhattan hotellari</h1>
-  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Yaqin hotellar bitta raqamli belgida yig'ilgan — ustiga bossangiz ochiladi. Ro'yxatdagi hotelni bossangiz, xarita o'sha yerga boradi. Xaritani kattalashtirish uchun + / − tugmalarini ishlating.</p>
+  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Yaqin hotellar bitta raqamli belgida yig'ilgan — ustiga bossangiz ochiladi. <b>Tochkalar</b> — Uber haydovchisi uchun eng zich ko'chalar: qizil belgidagi son — shu joydagi mehmonxonalar soni (~taxminiy), ustiga bossangiz hotel ro'yxati chiqadi. Xaritani kattalashtirish uchun + / − tugmalarini ishlating.</p>
 </header>
-<div class="filters">
+<div class="modes">
+  <button data-mode="hotels" class="active">🏨 Hotellar (8)</button>
+  <button data-mode="tochka">📍 Tochkalar (10)</button>
+</div>
+<div class="filters" id="filters">
   <button data-filter="all" class="active">Hammasi (8)</button>
   <button data-filter="Midtown">Midtown (5)</button>
   <button data-filter="Downtown">Downtown (3)</button>
@@ -60,6 +82,56 @@ const HOTELS = [
   { name: "The Wall Street Hotel", area: "Downtown", lat: 40.707435, lng: -74.006017, address: "1 Platt St, New York, NY 10038", rating: "9.6 (Expedia)", price: "O'rtacha", phone: "+1 212-419-2618", site: "" }
 ];
 
+// Uber haydovchisi uchun "Tochka"lar — eng zich hotel ko'chalar.
+// count — shu joydagi mehmonxonalar soni (~taxminiy, rasmiy reyestr emas).
+// hotels — ro'yxatda tekshirilgan mehmonxonalar (nomi + manzil).
+const TOCHKA = [
+  { n: 1, place: "West 42nd Street", detail: "8th Ave va Broadway oralig'i — Times Square markazi", count: 12, lat: 40.7570, lng: -73.9855, hotels: [
+    ["Pod Times Square", "400 W 42nd St"], ["Hilton New York Times Square", "234 W 42nd St"],
+    ["Hilton Garden Inn Times Square", "136 W 42nd St"], ["The Knickerbocker", "6 Times Sq"],
+    ["Hyatt Grand Central", "109 E 42nd St"], ["Westin New York Grand Central", "212 E 42nd St"],
+    ["Westgate New York Grand Central", "304 E 42nd St"] ] },
+  { n: 2, place: "West 44th – 45th Streets", detail: "6th va 8th Ave oralig'i — Theater District", count: 10, lat: 40.7573, lng: -73.9889, hotels: [
+    ["InterContinental New York Times Square", "300 W 44th St"], ["Millennium Broadway", "145 W 44th St"],
+    ["Millennium Premier", "133 W 44th St"], ["Algonquin", "59 W 44th St"],
+    ["Ramada Times Square", "343 W 44th St"], ["Hotel St. James", "109 W 45th St"],
+    ["45 Times Square Hotel", "125 W 45th St"], ["Night Hotel", "132 W 45th St"],
+    ["Hyatt Centric Times Square", "135 W 45th St"] ] },
+  { n: 3, place: "Lexington Avenue", detail: "East 48th–50th Streets — East Side biznes klasteri", count: 9, lat: 40.7555, lng: -73.9732, hotels: [
+    ["The Lexington Hotel", "511 Lexington Ave"], ["Hotel 48LEX", "517 Lexington Ave"],
+    ["The Kimberly", "145 E 50th St"], ["San Carlos Hotel", "150 E 50th St"] ] },
+  { n: 4, place: "Central Park South", detail: "West 59th Street — hashmamatli mehmonxonalar", count: 8, lat: 40.7650, lng: -73.9735, hotels: [
+    ["The Plaza", "768 5th Ave"], ["Ritz-Carlton New York, Central Park", "50 Central Park S"],
+    ["Park Lane Hotel", "36 Central Park S"], ["JW Marriott Essex House", "160 Central Park S"],
+    ["Mandarin Oriental", "80 Columbus Circle"], ["Trump International", "1 Central Park W"] ] },
+  { n: 5, place: "West 34th Street", detail: "5th va 8th Ave oralig'i — Macy's va Penn Station atrofi", count: 9, lat: 40.7484, lng: -73.9877, hotels: [
+    ["The New Yorker", "481 8th Ave"], ["Hilton Garden Inn", "63 W 35th St"],
+    ["EVEN Hotel", "321 W 35th St"], ["Renaissance New York Midtown", "218 W 35th St"],
+    ["Hyatt Place", "52 W 36th St"], ["Fairfield Inn Penn Station", "325 W 33rd St"],
+    ["Holiday Inn Express Times Square South", "60 W 36th St"] ] },
+  { n: 6, place: "Broadway & Financial District", detail: "Wall St / Rector St atrofi — moliya markazi", count: 7, lat: 40.7075, lng: -74.0110, hotels: [
+    ["Conrad New York Downtown", "102 N End Ave"], ["Moxy NYC Downtown", "26 Ann St"],
+    ["The Wall Street Hotel", "1 Platt St"], ["Millennium Downtown", "55 Church St"],
+    ["Four Seasons Hotel New York Downtown", "27 Barclay St"], ["Club Quarters Wall Street", "40 Wall St"],
+    ["Andaz Wall Street", "75 Wall St"] ] },
+  { n: 7, place: "West 57th Street", detail: "5th va 8th Ave oralig'i — zamonaviy mehmonxonalar", count: 8, lat: 40.7656, lng: -73.9790, hotels: [
+    ["Park Hyatt New York", "153 W 57th St"], ["The Quin", "101 W 57th St"],
+    ["Le Parker Meridien", "119 W 56th St"], ["The London NYC", "151 W 54th St"],
+    ["Salisbury Hotel", "123 W 57th St"] ] },
+  { n: 8, place: "East 34th Street", detail: "Park Ave / Madison Ave — Murray Hill va Midtown janubi", count: 6, lat: 40.7467, lng: -73.9810, hotels: [
+    ["The Kitano", "66 Park Ave"], ["The Roger", "131 Madison Ave"],
+    ["Shelburne Sonesta", "303 Lexington Ave"], ["The Marmara Park Avenue", "114 E 32nd St"] ] },
+  { n: 9, place: "West 48th Street", detail: "8th Avenue — zich turar-joy va tijorat bloki", count: 7, lat: 40.7622, lng: -73.9866, hotels: [
+    ["Hard Rock Hotel", "159 W 48th St"], ["voco Times Square", "170 W 48th St"],
+    ["The Gallivant Times Square", "234 W 48th St"], ["Belvedere Hotel", "319 W 48th St"],
+    ["Kimpton Era", "32 W 48th St"], ["Holiday Inn Express", "538 W 48th St"],
+    ["Comfort Inn Midtown West", "548 W 48th St"] ] },
+  { n: 10, place: "Barclay St & Church St", detail: "Lower Manhattan / Tribeca — WTC va transport markazi", count: 6, lat: 40.7127, lng: -74.0097, hotels: [
+    ["Four Seasons Hotel New York Downtown", "27 Barclay St"], ["Millennium Downtown", "55 Church St"],
+    ["The Beekman", "123 Nassau St"], ["W New York Downtown", "8 Albany St"],
+    ["Conrad New York Downtown", "102 N End Ave"], ["The Roxy Hotel", "2 6th Ave"] ] }
+];
+
 const map = L.map("map", { scrollWheelZoom: false }).setView([40.741, -73.995], 13);
 L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
   maxZoom: 19,
@@ -74,6 +146,7 @@ window.addEventListener("load", fixSize);
 window.addEventListener("resize", fixSize);
 window.addEventListener("orientationchange", () => setTimeout(fixSize, 300));
 
+// --- Hotellar qatlami ---
 const markers = {};
 const cluster = L.markerClusterGroup();
 HOTELS.forEach(h => {
@@ -84,6 +157,34 @@ HOTELS.forEach(h => {
 });
 map.addLayer(cluster);
 
+// --- Tochkalar qatlami ---
+const tochkaMarkers = {};
+const tochkaCluster = L.markerClusterGroup({
+  iconCreateFunction: function(c) {
+    const kids = c.getAllChildMarkers();
+    let sum = 0;
+    kids.forEach(m => { sum += m.options.tochkaCount; });
+    return L.divIcon({
+      html: `<div class="tochka-cluster"><div class="tc-num">~${sum}</div><div class="tc-label">${kids.length} tochka</div></div>`,
+      className: "", iconSize: [56, 56], iconAnchor: [28, 28]
+    });
+  }
+});
+TOCHKA.forEach(t => {
+  const listHtml = t.hotels.map(h => `<li><b>${h[0]}</b> — ${h[1]}</li>`).join("");
+  const popup = `<div class="tochka-popup"><b>Tochka ${t.n} — ${t.place}</b><br>${t.detail}<br><b>Mehmonxonalar: ~${t.count} ta</b><ul>${listHtml}</ul><span style="color:#6b7280;font-size:12px">Son taxminiy (~), ro'yxatda tekshirilgan hotellar.</span></div>`;
+  const m = L.marker([t.lat, t.lng], {
+    tochkaCount: t.count,
+    icon: L.divIcon({
+      html: `<div class="tochka-marker"><div class="tm-count">~${t.count}</div><div class="tm-name">Tochka ${t.n}</div></div>`,
+      className: "", iconSize: [58, 58], iconAnchor: [29, 29]
+    })
+  }).bindPopup(popup);
+  tochkaCluster.addLayer(m);
+  tochkaMarkers[t.n] = m;
+});
+
+// --- Ro'yxatlar ---
 const listEl = document.getElementById("list");
 function render(filter) {
   listEl.innerHTML = "";
@@ -97,8 +198,21 @@ function render(filter) {
     listEl.appendChild(div);
   });
 }
+function renderTochkaList() {
+  listEl.innerHTML = "";
+  TOCHKA.forEach(t => {
+    const div = document.createElement("div");
+    div.className = "tochka-row";
+    div.innerHTML = `<div class="tochka-badge"><div class="tb-count">~${t.count}</div><div class="tb-name">Tochka ${t.n}</div></div><div><h3>${t.place}</h3><div class="meta">${t.detail}<br><b>~${t.count} ta mehmonxona</b> · ro'yxatda ${t.hotels.length} ta tekshirilgan</div></div>`;
+    div.onclick = () => {
+      tochkaCluster.zoomToShowLayer(tochkaMarkers[t.n], () => tochkaMarkers[t.n].openPopup());
+    };
+    listEl.appendChild(div);
+  });
+}
 render("all");
 
+// --- Filtrlar (hotellar rejimi) ---
 document.querySelectorAll(".filters button").forEach(btn => {
   btn.onclick = () => {
     document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
@@ -107,6 +221,29 @@ document.querySelectorAll(".filters button").forEach(btn => {
     if (btn.dataset.filter === "Midtown") map.flyTo([40.757, -73.991], 15, { duration: 0.8 });
     if (btn.dataset.filter === "Downtown") map.flyTo([40.711, -74.01], 15, { duration: 0.8 });
     if (btn.dataset.filter === "all") map.flyTo([40.741, -73.995], 13, { duration: 0.8 });
+  };
+});
+
+// --- Rejimlar: Hotellar / Tochkalar ---
+let mode = "hotels";
+document.querySelectorAll(".modes button").forEach(btn => {
+  btn.onclick = () => {
+    if (btn.dataset.mode === mode) return;
+    mode = btn.dataset.mode;
+    document.querySelectorAll(".modes button").forEach(b => b.classList.toggle("active", b === btn));
+    document.getElementById("filters").style.display = mode === "hotels" ? "flex" : "none";
+    if (mode === "hotels") {
+      map.removeLayer(tochkaCluster);
+      map.addLayer(cluster);
+      render("all");
+      map.flyTo([40.741, -73.995], 13, { duration: 0.8 });
+    } else {
+      map.removeLayer(cluster);
+      map.addLayer(tochkaCluster);
+      renderTochkaList();
+      map.fitBounds(tochkaCluster.getBounds().pad(0.12));
+    }
+    setTimeout(fixSize, 300);
   };
 });
 </script>
