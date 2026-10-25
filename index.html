@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uz">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Manhattan hotellari — xarita</title>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+  header { padding: 14px 16px; background: #111827; color: #fff; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: #d1d5db; font-size: 14px; }
+  .filters { padding: 10px 16px; display: flex; gap: 8px; flex-wrap: wrap; background: #f9fafb; border-bottom: 1px solid #e5e7eb; }
+  .filters button { padding: 8px 14px; border: 1px solid #d1d5db; background: #fff; border-radius: 999px; cursor: pointer; font-size: 14px; }
+  .filters button.active { background: #111827; color: #fff; border-color: #111827; }
+  .layout { display: flex; height: calc(100vh - 132px); min-height: 420px; }
+  #map { flex: 1; }
+  aside { width: 340px; max-width: 42vw; overflow-y: auto; border-left: 1px solid #e5e7eb; background: #fff; }
+  .hotel { padding: 14px 16px; border-bottom: 1px solid #eee; cursor: pointer; }
+  .hotel:hover { background: #f9fafb; }
+  .hotel h3 { margin: 0 0 4px; font-size: 16px; }
+  .hotel .meta { color: #6b7280; font-size: 13px; line-height: 1.5; }
+  .hotel .rating { color: #b45309; font-weight: 600; }
+  .hotel a { color: #2563eb; }
+  @media (max-width: 700px) {
+    .layout { flex-direction: column; height: auto; }
+    #map { height: 55vh; }
+    aside { width: 100%; max-width: none; border-left: none; }
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>🏨 Manhattan hotellari</h1>
+  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Ro'yxatdagi hotelni bossangiz, xarita o'sha yerga boradi.</p>
+</header>
+<div class="filters">
+  <button data-filter="all" class="active">Hammasi (8)</button>
+  <button data-filter="Midtown">Midtown (5)</button>
+  <button data-filter="Downtown">Downtown (3)</button>
+</div>
+<div class="layout">
+  <div id="map"></div>
+  <aside id="list"></aside>
+</div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const HOTELS = [
+  { name: "Pod Times Square", area: "Midtown", lat: 40.75846556, lng: -73.99308539, address: "400 W 42nd St, New York, NY 10036", rating: "4.3 ★ (1,867 ta sharh)", price: "O'rtacha", phone: "+1 844-763-7666", site: "https://www.thepodhotel.com/pod-times-square" },
+  { name: "Aliz Hotel Times Square", area: "Midtown", lat: 40.756181, lng: -73.991726, address: "310 W 40th St, New York, NY", rating: "4.0 ★", price: "Qimmat", phone: "+1 646-609-5122", site: "https://www.alizhotel.com/" },
+  { name: "InterContinental New York Times Square", area: "Midtown", lat: 40.758607, lng: -73.989401, address: "300 W 44th St, New York, NY", rating: "4.5 ★ (1,790 ta sharh)", price: "Qimmat", phone: "+1 212-803-4500", site: "https://www.ihg.com/intercontinental/hotels/us/en/new-york/nychc/hoteldetail" },
+  { name: "Element Times Square West", area: "Midtown", lat: 40.75576898, lng: -73.99182306, address: "311 W 39th St, New York, NY 10018", rating: "4.2 ★ (978 ta sharh)", price: "Qimmat", phone: "+1 212-643-0770", site: "https://www.marriott.com/en-us/hotels/nycel-element-new-york-times-square-west/overview/?scid=f2ae0541-1279-4f24-b197-a979c79310b0" },
+  { name: "Hilton New York Times Square", area: "Midtown", lat: 40.75670242, lng: -73.9888059, address: "234 W 42nd St, New York, NY 10036", rating: "4.5 ★ (1,472 ta sharh)", price: "Qimmat", phone: "+1 212-913-9488", site: "https://www.hilton.com/en/hotels/nyctshh-hilton-times-square/?SEO_id=GMB-AMER-HH-NYCTSHH" },
+  { name: "Conrad New York Downtown", area: "Downtown", lat: 40.71504, lng: -74.015846, address: "102 N End Ave, New York, NY", rating: "4.7 ★ (1,235 ta sharh)", price: "Qimmat", phone: "+1 212-945-0100", site: "https://www.hilton.com/en/hotels/nyccici-conrad-new-york-downtown/?SEO_id=GMB-AMER-CN-NYCCICI" },
+  { name: "Moxy NYC Downtown", area: "Downtown", lat: 40.71080176, lng: -74.00784501, address: "26 Ann Street, New York, NY 10038", rating: "Reyting — ma'lumot yo'q", price: "Qimmat", phone: "+1 212-257-8886", site: "https://www.marriott.com/en-us/hotels/nycof-moxy-nyc-downtown/overview/?scid=f2ae0541-1279-4f24-b197-a979c79310b0" },
+  { name: "The Wall Street Hotel", area: "Downtown", lat: 40.707435, lng: -74.006017, address: "1 Platt St, New York, NY 10038", rating: "9.6 (Expedia)", price: "O'rtacha", phone: "+1 212-419-2618", site: "" }
+];
+
+const map = L.map("map").setView([40.741, -73.995], 13);
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  maxZoom: 19,
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
+}).addTo(map);
+
+const markers = {};
+HOTELS.forEach(h => {
+  const popup = `<b>${h.name}</b><br>${h.area} · ${h.rating}<br>${h.address}<br>${h.phone}${h.site ? `<br><a href="${h.site}" target="_blank" rel="noopener">Rasmiy sayt</a>` : ""}`;
+  const m = L.marker([h.lat, h.lng]).addTo(map).bindPopup(popup);
+  markers[h.name] = m;
+});
+
+const listEl = document.getElementById("list");
+function render(filter) {
+  listEl.innerHTML = "";
+  HOTELS.filter(h => filter === "all" || h.area === filter).forEach(h => {
+    const div = document.createElement("div");
+    div.className = "hotel";
+    div.innerHTML = `<h3>${h.name}</h3><div class="meta"><span class="rating">${h.rating}</span> · ${h.area} · ${h.price}<br>${h.address}<br>${h.phone}${h.site ? `<br><a href="${h.site}" target="_blank" rel="noopener">Rasmiy sayt</a>` : ""}</div>`;
+    div.onclick = () => {
+      map.flyTo([h.lat, h.lng], 16, { duration: 0.8 });
+      markers[h.name].openPopup();
+    };
+    listEl.appendChild(div);
+  });
+}
+render("all");
+
+document.querySelectorAll(".filters button").forEach(btn => {
+  btn.onclick = () => {
+    document.querySelectorAll(".filters button").forEach(b => b.classList.remove("active"));
+    btn.classList.add("active");
+    render(btn.dataset.filter);
+    if (btn.dataset.filter === "Midtown") map.flyTo([40.757, -73.991], 15, { duration: 0.8 });
+    if (btn.dataset.filter === "Downtown") map.flyTo([40.711, -74.01], 15, { duration: 0.8 });
+    if (btn.dataset.filter === "all") map.flyTo([40.741, -73.995], 13, { duration: 0.8 });
+  };
+});
+</script>
+</body>
+</html>
