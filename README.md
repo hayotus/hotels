@@ -23,15 +23,23 @@ Xarita Leaflet + OpenStreetMap asosida, bitta `index.html` fayl.
 ## TOP-5 Tochka (Uber haydovchisi uchun)
 
 Saytda ikkita rejim bor: **Hotellar (8)** va **TOP-5 Tochka** — NYC Open Data
-(758 ta hotel binosi) asosida hisoblangan eng zich joylar. Qizil metkadagi son —
-shu tochka atrofida 200 m radiusda nechta hotel binosi borligi, bosganda
-manzillar ro'yxati chiqadi:
+(758 ta hotel binosi) + OSRM mashina yo'li hisob-kitobi asosida. Qizil metkadagi
+son — shu tochka turgan joydan **mashinada 0,3 mil** ichida nechta hotel binosi
+borligi. Metkani bossangiz ro'yxat chiqadi: har bir hotel yonida xona soni va
+tochka'dan necha mil uzoqligi yozilgan. Moviy nuqtalar — 0,3 mil ichidagi hotellar.
 
-1. W 39th St & 8th Ave — 30 ta
-2. W 37th St & 6th Ave — 23 ta
-3. W 46th St & Broadway — 22 ta
-4. 6th Ave & W 28th St — 22 ta
-5. W 48th St & 8th Ave — 20 ta
+| Tochka | 0,3 mil ichida |
+|---|---|
+| 1. W 39th St & 8th Ave | 14 ta |
+| 2. W 37th St & 6th Ave | 9 ta |
+| 3. W 46th St & Broadway | 10 ta |
+| 4. 6th Ave & W 28th St | 14 ta |
+| 5. W 48th St & 8th Ave | 10 ta |
+
+Jami 57 ta hotel binosi (53 ta noyob manzil). Bir tomonlama ko'chalar tufayli
+mashina masofasi to'g'ri chiziqdan uzun: masalan, Aliz (310 W 40th St) Tochka 1
+dan to'g'ri chiziqda 120 m, lekin mashinada 0,54 mil — shuning uchun 0,3 mil
+ro'yxatiga kirmagan.
 
 ## Ma'lumotlar (`data/`)
 

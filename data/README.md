@@ -12,6 +12,10 @@ Manba: **NYC Open Data — "Hotels Properties Citywide"**
   `zip`, `class` (bino klassi, masalan H1/H2/H3/RH), `lat`, `lng`, `nta` (mahalla).
 - **nyc-hotel-streets.json** (256 ta ko'cha, ~17 KB) — ko'cha kesimida sanash:
   har bir ko'chada nechta hotel binosi borligi va uy raqamlari ro'yxati.
+- **nyc-hotel-tochka-top5.json** — 200 m radiusdagi eng zich 5 ta tochka
+  (30/23/22/22/20 ta bino).
+- **nyc-hotel-tochka-03mi.json** — 5 ta tochka uchun mashinada 0,3 mil (OSRM
+  yo'l masofasi) ichidagi hotellar: manzil, mil, xona soni (rooms — aniqlanmoqda).
 
 ## Tozalash usuli
 
