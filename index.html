@@ -89,68 +89,66 @@ const HOTELS = [
 // count — shu tochka turgan joydan mashinada 0,3 mil ichida nechta hotel BINOSI borligi.
 // hotels — 0,3 mil ichidagi hotellar: manzil, tochka'dan mil, xona soni (rooms: null = aniqlanmoqda).
 const TOCHKA = [
-  { n: 1, place: "W 39th St & 8th Ave", detail: "W 38th–40th St, 8th–9th Ave oralig'i", count: 14, lat: 40.75526, lng: -73.99241, hotels: [
-    { a: "319 W 38th St", mi: 0.01, rooms: null, lat: 40.755051, lng: -73.992417 },
-    { a: "585 8th Ave", mi: 0.08, rooms: null, lat: 40.755097, lng: -73.991363 },
-    { a: "273 W 38th St", mi: 0.11, rooms: null, lat: 40.754315, lng: -73.99067 },
-    { a: "305 W 39th St", mi: 0.13, rooms: null, lat: 40.755553, lng: -73.99168 },
-    { a: "311 W 39th St", mi: 0.14, rooms: null, lat: 40.755602, lng: -73.991803 },
-    { a: "618 8th Ave", mi: 0.14, rooms: null, lat: 40.755852, lng: -73.990785 },
-    { a: "337 W 39th St", mi: 0.17, rooms: null, lat: 40.755825, lng: -73.99233 },
-    { a: "338 W 39th St", mi: 0.18, rooms: null, lat: 40.755827, lng: -73.99238 },
-    { a: "341 W 39th St", mi: 0.18, rooms: null, lat: 40.75586, lng: -73.992413 },
-    { a: "343 W 39th St", mi: 0.18, rooms: null, lat: 40.755877, lng: -73.992453 },
-    { a: "350 W 39th St", mi: 0.19, rooms: null, lat: 40.755932, lng: -73.992626 },
-    { a: "252 W 40th St", mi: 0.23, rooms: null, lat: 40.755369, lng: -73.989374 },
-    { a: "205 W 40th St", mi: 0.29, rooms: null, lat: 40.754971, lng: -73.988392 },
+  { n: 1, place: "W 39th St & 8th Ave", detail: "W 38th–40th St, 8th–9th Ave oralig'i", count: 14, roomsTotal: 2905, lat: 40.75526, lng: -73.99241, hotels: [
+    { name: "Arlo Midtown", a: "319 W 38th St", mi: 0.01, rooms: 488, flag: null, lat: 40.755051, lng: -73.992417 },
+    { name: "Holiday Inn Times Square", a: "585 8th Ave", mi: 0.08, rooms: 271, flag: null, lat: 40.755097, lng: -73.991363 },
+    { name: "Doxie Hotel", a: "273 W 38th St", mi: 0.11, rooms: 43, flag: null, lat: 40.754315, lng: -73.99067 },
+    { name: "Artel Hotel Times Square", a: "305 W 39th St", mi: 0.13, rooms: 78, flag: null, lat: 40.755553, lng: -73.99168 },
+    { name: "Element Times Square West", a: "311 W 39th St", mi: 0.14, rooms: 411, flag: null, lat: 40.755602, lng: -73.991803 },
+    { name: null, a: "618 8th Ave", mi: 0.14, rooms: null, flag: null, lat: 40.755852, lng: -73.990785 },
+    { name: "Hampton Inn Times Square South", a: "337 W 39th St", mi: 0.17, rooms: 184, flag: null, lat: 40.755825, lng: -73.99233 },
+    { name: "Pestana CR7 Times Square", a: "338 W 39th St", mi: 0.18, rooms: 176, flag: null, lat: 40.755827, lng: -73.99238 },
+    { name: "Hyatt Place Times Square", a: "341–350 W 39th St", mi: 0.18, rooms: 520, flag: null, lat: 40.75586, lng: -73.992413 },
+    { name: "Holiday Inn Express Times Square", a: "343 W 39th St", mi: 0.18, rooms: 210, flag: null, lat: 40.755877, lng: -73.992453 },
+    { name: "AC Hotel Times Square", a: "252 W 40th St", mi: 0.23, rooms: 290, flag: null, lat: 40.755369, lng: -73.989374 },
+    { name: "Margaritaville Resort Times Square", a: "205 W 40th St", mi: 0.29, rooms: 234, flag: null, lat: 40.754971, lng: -73.988392 },
   ] },
-  { n: 2, place: "W 37th St & 6th Ave", detail: "W 35th–38th St, 5th–6th Ave — Herald Square", count: 9, lat: 40.75091, lng: -73.98472, hotels: [
-    { a: "60 W 37th St", mi: 0.02, rooms: null, lat: 40.751114, lng: -73.985025 },
-    { a: "1020 6th Ave", mi: 0.16, rooms: null, lat: 40.752404, lng: -73.985866 },
-    { a: "100 W 39th St", mi: 0.22, rooms: null, lat: 40.75303, lng: -73.985732 },
-    { a: "63 W 38th St", mi: 0.23, rooms: null, lat: 40.751773, lng: -73.984628 },
-    { a: "117 W 39th St", mi: 0.25, rooms: null, lat: 40.753313, lng: -73.98636 },
-    { a: "45 W 38th St", mi: 0.26, rooms: null, lat: 40.751597, lng: -73.984213 },
-    { a: "34 W 38th St", mi: 0.27, rooms: null, lat: 40.751473, lng: -73.983964 },
-    { a: "27 W 38th St", mi: 0.28, rooms: null, lat: 40.751424, lng: -73.983798 },
-    { a: "19 W 38th St", mi: 0.29, rooms: null, lat: 40.751344, lng: -73.983614 },
+  { n: 2, place: "W 37th St & 6th Ave", detail: "W 35th–38th St, 5th–6th Ave — Herald Square", count: 9, roomsTotal: 1585, lat: 40.75091, lng: -73.98472, hotels: [
+    { name: "Embassy Suites Times Square", a: "60 W 37th St", mi: 0.02, rooms: 310, flag: null, lat: 40.751114, lng: -73.985025 },
+    { name: "Americana Inn", a: "1020 6th Ave", mi: 0.16, rooms: 50, flag: null, lat: 40.752404, lng: -73.985866 },
+    { name: "Residence Inn Times Square", a: "100 W 39th St", mi: 0.22, rooms: 353, flag: null, lat: 40.75303, lng: -73.985732 },
+    { name: "Refinery Hotel", a: "63 W 38th St", mi: 0.23, rooms: 197, flag: null, lat: 40.751773, lng: -73.984628 },
+    { name: null, a: "117 W 39th St", mi: 0.25, rooms: null, flag: null, lat: 40.753313, lng: -73.98636 },
+    { name: "Archer Hotel New York", a: "45 W 38th St", mi: 0.26, rooms: 180, flag: null, lat: 40.751597, lng: -73.984213 },
+    { name: "ARIYA Hotel Times Square", a: "34 W 38th St", mi: 0.27, rooms: 199, flag: "qurilmoqda", lat: 40.751473, lng: -73.983964 },
+    { name: null, a: "27 W 38th St", mi: 0.28, rooms: null, flag: null, lat: 40.751424, lng: -73.983798 },
+    { name: "Grayson Hotel", a: "19 W 38th St", mi: 0.29, rooms: 296, flag: null, lat: 40.751344, lng: -73.983614 },
   ] },
-  { n: 3, place: "W 46th St & Broadway", detail: "W 44th–48th St, Broadway–7th Ave — Times Square", count: 10, lat: 40.75782, lng: -73.98367, hotels: [
-    { a: "129 W 46th St", mi: 0.02, rooms: null, lat: 40.757811, lng: -73.98323 },
-    { a: "126 W 46th St", mi: 0.02, rooms: null, lat: 40.757781, lng: -73.983197 },
-    { a: "59 W 46th St", mi: 0.16, rooms: null, lat: 40.756803, lng: -73.980841 },
-    { a: "128 W 47th St", mi: 0.19, rooms: null, lat: 40.758428, lng: -73.982789 },
-    { a: "132 W 47th St", mi: 0.19, rooms: null, lat: 40.758461, lng: -73.982869 },
-    { a: "30 W 46th St", mi: 0.2, rooms: null, lat: 40.756504, lng: -73.980173 },
-    { a: "145 W 47th St", mi: 0.21, rooms: null, lat: 40.758577, lng: -73.9831 },
-    { a: "157 W 47th St", mi: 0.22, rooms: null, lat: 40.758678, lng: -73.983342 },
-    { a: "32 W 48th St", mi: 0.27, rooms: null, lat: 40.757978, lng: -73.979783 },
+  { n: 3, place: "W 46th St & Broadway", detail: "W 44th–48th St, Broadway–7th Ave — Times Square", count: 10, roomsTotal: 1992, lat: 40.75782, lng: -73.98367, hotels: [
+    { name: "Hotel 46 Times Square", a: "129 W 46th St", mi: 0.02, rooms: 79, flag: null, lat: 40.757811, lng: -73.98323 },
+    { name: null, a: "126 W 46th St", mi: 0.02, rooms: null, flag: null, lat: 40.757781, lng: -73.983197 },
+    { name: "The Hotel at Times Square", a: "59 W 46th St", mi: 0.16, rooms: 210, flag: null, lat: 40.756803, lng: -73.980841 },
+    { name: "Sanctuary Hotel", a: "128–132 W 47th St", mi: 0.19, rooms: 114, flag: null, lat: 40.758428, lng: -73.982789 },
+    { name: "Cambria Hotel Times Square", a: "30 W 46th St", mi: 0.2, rooms: 196, flag: "yopilgan", lat: 40.756504, lng: -73.980173 },
+    { name: "Hotel Riu Plaza Manhattan Times Square", a: "145 W 47th St", mi: 0.21, rooms: 656, flag: null, lat: 40.758577, lng: -73.9831 },
+    { name: "OYO Times Square", a: "157 W 47th St", mi: 0.22, rooms: 208, flag: null, lat: 40.758678, lng: -73.983342 },
+    { name: "Kimpton Era Midtown", a: "32 W 48th St", mi: 0.27, rooms: 529, flag: null, lat: 40.757978, lng: -73.979783 },
   ] },
-  { n: 4, place: "6th Ave & W 28th St", detail: "W 26th–30th St, Broadway–6th Ave — NoMad", count: 14, lat: 40.74619, lng: -73.99029, hotels: [
-    { a: "835 6th Ave", mi: 0.05, rooms: null, lat: 40.746805, lng: -73.989974 },
-    { a: "124 W 29th St", mi: 0.09, rooms: null, lat: 40.747036, lng: -73.990988 },
-    { a: "1227 Broadway", mi: 0.16, rooms: null, lat: 40.746635, lng: -73.988491 },
-    { a: "116 W 31st St", mi: 0.18, rooms: null, lat: 40.748208, lng: -73.98992 },
-    { a: "1260 Broadway", mi: 0.21, rooms: null, lat: 40.7484, lng: -73.988144 },
-    { a: "32 W 29th St", mi: 0.22, rooms: null, lat: 40.746149, lng: -73.988877 },
-    { a: "44 W 29th St", mi: 0.23, rooms: null, lat: 40.746223, lng: -73.989054 },
-    { a: "1186 Broadway", mi: 0.23, rooms: null, lat: 40.745608, lng: -73.988661 },
-    { a: "1185 Broadway", mi: 0.25, rooms: null, lat: 40.7454, lng: -73.988719 },
-    { a: "232 W 29th St", mi: 0.27, rooms: null, lat: 40.748301, lng: -73.993987 },
-    { a: "1226 Broadway", mi: 0.3, rooms: null, lat: 40.747074, lng: -73.988386 },
-    { a: "43 W 32nd St", mi: 0.3, rooms: null, lat: 40.747686, lng: -73.98673 },
+  { n: 4, place: "6th Ave & W 28th St", detail: "W 26th–30th St, Broadway–6th Ave — NoMad", count: 14, roomsTotal: 2755, lat: 40.74619, lng: -73.99029, hotels: [
+    { name: "Kimpton Hotel Eventi", a: "835 6th Ave", mi: 0.05, rooms: 291, flag: null, lat: 40.746805, lng: -73.989974 },
+    { name: "DoubleTree Chelsea", a: "124 W 29th St", mi: 0.09, rooms: 236, flag: null, lat: 40.747036, lng: -73.990988 },
+    { name: "Virgin Hotels New York City", a: "1227 Broadway", mi: 0.16, rooms: 462, flag: null, lat: 40.746635, lng: -73.988491 },
+    { name: "Hampton Inn Madison Square Garden", a: "116 W 31st St", mi: 0.18, rooms: 136, flag: null, lat: 40.748208, lng: -73.98992 },
+    { name: "Martinique New York on Broadway", a: "1260 Broadway", mi: 0.21, rooms: 518, flag: null, lat: 40.7484, lng: -73.988144 },
+    { name: "The Paul Hotel NYC", a: "32 W 29th St", mi: 0.22, rooms: 122, flag: null, lat: 40.746149, lng: -73.988877 },
+    { name: "MADE Hotel", a: "44 W 29th St", mi: 0.23, rooms: 108, flag: null, lat: 40.746223, lng: -73.989054 },
+    { name: "Ace Hotel New York", a: "1186 Broadway", mi: 0.23, rooms: 280, flag: null, lat: 40.745608, lng: -73.988661 },
+    { name: "The Ritz-Carlton NoMad", a: "1185 Broadway", mi: 0.25, rooms: 250, flag: null, lat: 40.7454, lng: -73.988719 },
+    { name: "Holiday Inn Express Chelsea-NoMad", a: "232 W 29th St", mi: 0.27, rooms: 228, flag: null, lat: 40.748301, lng: -73.993987 },
+    { name: null, a: "1226 Broadway", mi: 0.3, rooms: null, flag: null, lat: 40.747074, lng: -73.988386 },
+    { name: "Hotel Stanford", a: "43 W 32nd St", mi: 0.3, rooms: 124, flag: "yopilgan bo’lishi mumkin", lat: 40.747686, lng: -73.98673 },
   ] },
-  { n: 5, place: "W 48th St & 8th Ave", detail: "W 46th–50th St, 7th–8th Ave — Times Square shimoli", count: 10, lat: 40.76032, lng: -73.98579, hotels: [
-    { a: "234 W 48th St", mi: 0.0, rooms: null, lat: 40.760454, lng: -73.985655 },
-    { a: "1601 Broadway", mi: 0.03, rooms: null, lat: 40.760375, lng: -73.985189 },
-    { a: "711 7th Ave", mi: 0.11, rooms: null, lat: 40.759543, lng: -73.98437 },
-    { a: "701 7th Ave", mi: 0.13, rooms: null, lat: 40.759293, lng: -73.984543 },
-    { a: "1568 Broadway", mi: 0.15, rooms: null, lat: 40.759055, lng: -73.98471 },
-    { a: "2 Times Square", mi: 0.15, rooms: null, lat: 40.75931, lng: -73.984857 },
-    { a: "1567 Broadway", mi: 0.16, rooms: null, lat: 40.759247, lng: -73.985168 },
-    { a: "155 W 48th St", mi: 0.17, rooms: null, lat: 40.759293, lng: -73.982854 },
-    { a: "150 W 48th St", mi: 0.17, rooms: null, lat: 40.759246, lng: -73.982786 },
-    { a: "1535 Broadway", mi: 0.22, rooms: null, lat: 40.758267, lng: -73.985468 },
+  { n: 5, place: "W 48th St & 8th Ave", detail: "W 46th–50th St, 7th–8th Ave — Times Square shimoli", count: 10, roomsTotal: 6830, lat: 40.76032, lng: -73.98579, hotels: [
+    { name: "The Gallivant Times Square", a: "234 W 48th St", mi: 0.0, rooms: 335, flag: null, lat: 40.760454, lng: -73.985655 },
+    { name: "Crowne Plaza Times Square", a: "1601 Broadway", mi: 0.03, rooms: 685, flag: null, lat: 40.760375, lng: -73.985189 },
+    { name: "voco Times Square", a: "711 7th Ave", mi: 0.11, rooms: 422, flag: null, lat: 40.759543, lng: -73.98437 },
+    { name: "The Times Square EDITION", a: "701 7th Ave", mi: 0.13, rooms: 452, flag: null, lat: 40.759293, lng: -73.984543 },
+    { name: "Tempo by Hilton Times Square", a: "1568 Broadway", mi: 0.15, rooms: 661, flag: null, lat: 40.759055, lng: -73.98471 },
+    { name: "Renaissance Times Square", a: "2 Times Square", mi: 0.15, rooms: 317, flag: null, lat: 40.75931, lng: -73.984857 },
+    { name: "W New York Times Square", a: "1567 Broadway", mi: 0.16, rooms: 509, flag: null, lat: 40.759247, lng: -73.985168 },
+    { name: "Hard Rock Hotel New York", a: "155 W 48th St", mi: 0.17, rooms: 446, flag: null, lat: 40.759293, lng: -73.982854 },
+    { name: "Hampton Inn + Home2 Suites + Motto (1 bino, 3 hotel)", a: "150 W 48th St", mi: 0.17, rooms: 1046, flag: null, lat: 40.759246, lng: -73.982786 },
+    { name: "New York Marriott Marquis", a: "1535 Broadway", mi: 0.22, rooms: 1957, flag: null, lat: 40.758267, lng: -73.985468 },
   ] },
 ];
 
@@ -193,10 +191,16 @@ const tochkaCluster = L.markerClusterGroup({
     });
   }
 });
-function roomsText(r) { return r ? r + " xona" : "xona: —"; }
+function roomsText(r) { return r ? r.toLocaleString("en-US") + " xona" : "xona: —"; }
+function hotelLine(h) {
+  const r = roomsText(h.rooms);
+  const f = h.flag ? " · " + h.flag : "";
+  const name = h.name ? `<b>${h.name}</b> — ${h.a}` : `<b>${h.a}</b> — hotel yo'q`;
+  return `<li>${name} — <span class="mi">${h.mi.toFixed(2)} mil</span> · ${r}${f}</li>`;
+}
 TOCHKA.forEach(t => {
-  const listHtml = t.hotels.map(h => `<li><b>${h.a}</b> — <span class="mi">${h.mi.toFixed(2)} mil</span> · ${roomsText(h.rooms)}</li>`).join("");
-  const popup = `<div class="tochka-popup"><b>Tochka ${t.n} — ${t.place}</b><br>${t.detail}<br><b>0,3 mil (mashinada) ichida: ${t.count} ta hotel binosi</b><ul>${listHtml}</ul><span style="color:#6b7280;font-size:12px">Masofa — haqiqiy yo'l bo'ylab (OSRM), bir tomonlama ko'chalar hisobga olingan. Xona sonlari aniqlanmoqda.</span></div>`;
+  const listHtml = t.hotels.map(hotelLine).join("");
+  const popup = `<div class="tochka-popup"><b>Tochka ${t.n} — ${t.place}</b><br>${t.detail}<br><b>0,3 mil (mashinada) ichida: ${t.count} ta hotel binosi · jami ~${t.roomsTotal.toLocaleString("en-US")} xona</b><ul>${listHtml}</ul><span style="color:#6b7280;font-size:12px">Masofa — haqiqiy yo'l bo'ylab (OSRM), bir tomonlama ko'chalar hisobga olingan. Xona sonlari — hotel va bron qilish saytlari asosida.</span></div>`;
   const m = L.marker([t.lat, t.lng], {
     tochkaCount: t.count,
     icon: L.divIcon({
@@ -208,7 +212,7 @@ TOCHKA.forEach(t => {
   tochkaMarkers[t.n] = m;
   t.hotels.forEach(h => {
     const dot = L.circleMarker([h.lat, h.lng], { radius: 5, color: "#2563eb", weight: 2, fillColor: "#93c5fd", fillOpacity: 0.9 })
-      .bindPopup(`<b>${h.a}</b><br>Tochka ${t.n} (${t.place}) dan <b>${h.mi.toFixed(2)} mil</b><br>${roomsText(h.rooms)}`);
+      .bindPopup(h.name ? `<b>${h.name}</b><br>${h.a}<br>Tochka ${t.n} (${t.place}) dan <b>${h.mi.toFixed(2)} mil</b><br>${roomsText(h.rooms)}${h.flag ? " · " + h.flag : ""}` : `<b>${h.a}</b><br>Hotel yo'q<br>Tochka ${t.n} (${t.place}) dan <b>${h.mi.toFixed(2)} mil</b>`);
     nearbyLayer.addLayer(dot);
   });
 });
@@ -232,7 +236,7 @@ function renderTochkaList() {
   TOCHKA.forEach(t => {
     const div = document.createElement("div");
     div.className = "tochka-row";
-    div.innerHTML = `<div class="tochka-badge"><div class="tb-count">${t.count}</div><div class="tb-name">Tochka ${t.n}</div></div><div><h3>${t.place}</h3><div class="meta">${t.detail}<br><b>${t.count} ta hotel</b> · 0,3 mil (mashinada) ichida</div></div>`;
+    div.innerHTML = `<div class="tochka-badge"><div class="tb-count">${t.count}</div><div class="tb-name">Tochka ${t.n}</div></div><div><h3>${t.place}</h3><div class="meta">${t.detail}<br><b>${t.count} ta hotel</b> · ~${t.roomsTotal.toLocaleString("en-US")} xona · 0,3 mil (mashinada) ichida</div></div>`;
     div.onclick = () => {
       tochkaCluster.zoomToShowLayer(tochkaMarkers[t.n], () => tochkaMarkers[t.n].openPopup());
     };
