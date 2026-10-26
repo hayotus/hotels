@@ -19,3 +19,15 @@ Downtown:
 - The Wall Street Hotel — 1 Platt St — 9.6 (Expedia)
 
 Xarita Leaflet + OpenStreetMap asosida, bitta `index.html` fayl.
+
+## Tochkalar (Uber haydovchisi uchun)
+
+Saytda ikkita rejim bor: **Hotellar (8)** va **Tochkalar (10)** — eng zich hotel
+ko'chalar. Qizil metkadagi son — shu joydagi mehmonxonalar soni (~taxminiy),
+bosganda hotel ro'yxati chiqadi.
+
+## Ma'lumotlar (`data/`)
+
+NYC Open Data — "Hotels Properties Citywide" (view `tjus-cn27`):
+Manhattan'dagi 758 ta noyob hotel binosi (BBL bo'yicha tozalangan) va
+ko'cha kesimidagi sanash. Batafsil: `data/README.md`.
