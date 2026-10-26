@@ -20,11 +20,18 @@ Downtown:
 
 Xarita Leaflet + OpenStreetMap asosida, bitta `index.html` fayl.
 
-## Tochkalar (Uber haydovchisi uchun)
+## TOP-5 Tochka (Uber haydovchisi uchun)
 
-Saytda ikkita rejim bor: **Hotellar (8)** va **Tochkalar (10)** — eng zich hotel
-ko'chalar. Qizil metkadagi son — shu joydagi mehmonxonalar soni (~taxminiy),
-bosganda hotel ro'yxati chiqadi.
+Saytda ikkita rejim bor: **Hotellar (8)** va **TOP-5 Tochka** — NYC Open Data
+(758 ta hotel binosi) asosida hisoblangan eng zich joylar. Qizil metkadagi son —
+shu tochka atrofida 200 m radiusda nechta hotel binosi borligi, bosganda
+manzillar ro'yxati chiqadi:
+
+1. W 39th St & 8th Ave — 30 ta
+2. W 37th St & 6th Ave — 23 ta
+3. W 46th St & Broadway — 22 ta
+4. 6th Ave & W 28th St — 22 ta
+5. W 48th St & 8th Ave — 20 ta
 
 ## Ma'lumotlar (`data/`)
 

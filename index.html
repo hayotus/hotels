@@ -43,6 +43,7 @@
   .tochka-cluster .tc-label { font-size: 9px; margin-top: 2px; }
   .tochka-popup ul { margin: 6px 0 0; padding-left: 18px; }
   .tochka-popup li { font-size: 13px; line-height: 1.6; }
+  .leaflet-popup-content { max-height: 320px; overflow-y: auto; }
   @media (max-width: 700px) {
     .layout { flex-direction: column; height: auto; }
     #map { height: 420px; min-height: 420px; }
@@ -53,11 +54,11 @@
 <body>
 <header>
   <h1>🏨 Manhattan hotellari</h1>
-  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Yaqin hotellar bitta raqamli belgida yig'ilgan — ustiga bossangiz ochiladi. <b>Tochkalar</b> — Uber haydovchisi uchun eng zich ko'chalar: qizil belgidagi son — shu joydagi mehmonxonalar soni (~taxminiy), ustiga bossangiz hotel ro'yxati chiqadi. Xaritani kattalashtirish uchun + / − tugmalarini ishlating.</p>
+  <p>Midtown (Times Square atrofi) va Downtown — xaritada 8 ta hotel. Yaqin hotellar bitta raqamli belgida yig'ilgan — ustiga bossangiz ochiladi. <b>TOP-5 Tochka</b> — Uber haydovchisi uchun eng zich joylar: NYC Open Data (758 ta hotel binosi) asosida hisoblangan. Qizil metkadagi son — shu tochka atrofida 200 m radiusda nechta hotel binosi borligi. Metkani bossangiz, o'sha atrofdagi hotel manzillari chiqadi. Xaritani kattalashtirish uchun + / − tugmalarini ishlating.</p>
 </header>
 <div class="modes">
   <button data-mode="hotels" class="active">🏨 Hotellar (8)</button>
-  <button data-mode="tochka">📍 Tochkalar (10)</button>
+  <button data-mode="tochka">📍 TOP-5 Tochka</button>
 </div>
 <div class="filters" id="filters">
   <button data-filter="all" class="active">Hammasi (8)</button>
@@ -82,54 +83,41 @@ const HOTELS = [
   { name: "The Wall Street Hotel", area: "Downtown", lat: 40.707435, lng: -74.006017, address: "1 Platt St, New York, NY 10038", rating: "9.6 (Expedia)", price: "O'rtacha", phone: "+1 212-419-2618", site: "" }
 ];
 
-// Uber haydovchisi uchun "Tochka"lar — eng zich hotel ko'chalar.
-// count — shu joydagi mehmonxonalar soni (~taxminiy, rasmiy reyestr emas).
-// hotels — ro'yxatda tekshirilgan mehmonxonalar (nomi + manzil).
+// TOP-5 Tochka — NYC Open Data "Hotels Properties Citywide" (758 ta noyob
+// Manhattan hotel binosi, BBL bo'yicha tozalangan) asosida hisoblangan.
+// count — shu tochka markazidan 200 m radiusda nechta hotel BINOSI borligi.
+// hotels — 200 m radiusdagi hotel binolarining manzillari (takroriy manzillar birlashtirilgan).
 const TOCHKA = [
-  { n: 1, place: "West 42nd Street", detail: "8th Ave va Broadway oralig'i — Times Square markazi", count: 12, lat: 40.7570, lng: -73.9855, hotels: [
-    ["Pod Times Square", "400 W 42nd St"], ["Hilton New York Times Square", "234 W 42nd St"],
-    ["Hilton Garden Inn Times Square", "136 W 42nd St"], ["The Knickerbocker", "6 Times Sq"],
-    ["Hyatt Grand Central", "109 E 42nd St"], ["Westin New York Grand Central", "212 E 42nd St"],
-    ["Westgate New York Grand Central", "304 E 42nd St"] ] },
-  { n: 2, place: "West 44th – 45th Streets", detail: "6th va 8th Ave oralig'i — Theater District", count: 10, lat: 40.7573, lng: -73.9889, hotels: [
-    ["InterContinental New York Times Square", "300 W 44th St"], ["Millennium Broadway", "145 W 44th St"],
-    ["Millennium Premier", "133 W 44th St"], ["Algonquin", "59 W 44th St"],
-    ["Ramada Times Square", "343 W 44th St"], ["Hotel St. James", "109 W 45th St"],
-    ["45 Times Square Hotel", "125 W 45th St"], ["Night Hotel", "132 W 45th St"],
-    ["Hyatt Centric Times Square", "135 W 45th St"] ] },
-  { n: 3, place: "Lexington Avenue", detail: "East 48th–50th Streets — East Side biznes klasteri", count: 9, lat: 40.7555, lng: -73.9732, hotels: [
-    ["The Lexington Hotel", "511 Lexington Ave"], ["Hotel 48LEX", "517 Lexington Ave"],
-    ["The Kimberly", "145 E 50th St"], ["San Carlos Hotel", "150 E 50th St"] ] },
-  { n: 4, place: "Central Park South", detail: "West 59th Street — hashmamatli mehmonxonalar", count: 8, lat: 40.7650, lng: -73.9735, hotels: [
-    ["The Plaza", "768 5th Ave"], ["Ritz-Carlton New York, Central Park", "50 Central Park S"],
-    ["Park Lane Hotel", "36 Central Park S"], ["JW Marriott Essex House", "160 Central Park S"],
-    ["Mandarin Oriental", "80 Columbus Circle"], ["Trump International", "1 Central Park W"] ] },
-  { n: 5, place: "West 34th Street", detail: "5th va 8th Ave oralig'i — Macy's va Penn Station atrofi", count: 9, lat: 40.7484, lng: -73.9877, hotels: [
-    ["The New Yorker", "481 8th Ave"], ["Hilton Garden Inn", "63 W 35th St"],
-    ["EVEN Hotel", "321 W 35th St"], ["Renaissance New York Midtown", "218 W 35th St"],
-    ["Hyatt Place", "52 W 36th St"], ["Fairfield Inn Penn Station", "325 W 33rd St"],
-    ["Holiday Inn Express Times Square South", "60 W 36th St"] ] },
-  { n: 6, place: "Broadway & Financial District", detail: "Wall St / Rector St atrofi — moliya markazi", count: 7, lat: 40.7075, lng: -74.0110, hotels: [
-    ["Conrad New York Downtown", "102 N End Ave"], ["Moxy NYC Downtown", "26 Ann St"],
-    ["The Wall Street Hotel", "1 Platt St"], ["Millennium Downtown", "55 Church St"],
-    ["Four Seasons Hotel New York Downtown", "27 Barclay St"], ["Club Quarters Wall Street", "40 Wall St"],
-    ["Andaz Wall Street", "75 Wall St"] ] },
-  { n: 7, place: "West 57th Street", detail: "5th va 8th Ave oralig'i — zamonaviy mehmonxonalar", count: 8, lat: 40.7656, lng: -73.9790, hotels: [
-    ["Park Hyatt New York", "153 W 57th St"], ["The Quin", "101 W 57th St"],
-    ["Le Parker Meridien", "119 W 56th St"], ["The London NYC", "151 W 54th St"],
-    ["Salisbury Hotel", "123 W 57th St"] ] },
-  { n: 8, place: "East 34th Street", detail: "Park Ave / Madison Ave — Murray Hill va Midtown janubi", count: 6, lat: 40.7467, lng: -73.9810, hotels: [
-    ["The Kitano", "66 Park Ave"], ["The Roger", "131 Madison Ave"],
-    ["Shelburne Sonesta", "303 Lexington Ave"], ["The Marmara Park Avenue", "114 E 32nd St"] ] },
-  { n: 9, place: "West 48th Street", detail: "8th Avenue — zich turar-joy va tijorat bloki", count: 7, lat: 40.7622, lng: -73.9866, hotels: [
-    ["Hard Rock Hotel", "159 W 48th St"], ["voco Times Square", "170 W 48th St"],
-    ["The Gallivant Times Square", "234 W 48th St"], ["Belvedere Hotel", "319 W 48th St"],
-    ["Kimpton Era", "32 W 48th St"], ["Holiday Inn Express", "538 W 48th St"],
-    ["Comfort Inn Midtown West", "548 W 48th St"] ] },
-  { n: 10, place: "Barclay St & Church St", detail: "Lower Manhattan / Tribeca — WTC va transport markazi", count: 6, lat: 40.7127, lng: -74.0097, hotels: [
-    ["Four Seasons Hotel New York Downtown", "27 Barclay St"], ["Millennium Downtown", "55 Church St"],
-    ["The Beekman", "123 Nassau St"], ["W New York Downtown", "8 Albany St"],
-    ["Conrad New York Downtown", "102 N End Ave"], ["The Roxy Hotel", "2 6th Ave"] ] }
+  { n: 1, place: "W 39th St & 8th Ave", detail: "W 38th–40th St, 8th–9th Ave oralig'i", count: 30, lat: 40.75526, lng: -73.99241, hotels: [
+    "273 W 38th St", "305 W 39th St", "307 W 37th St", "310 W 40th St", "311 W 39th St",
+    "312 W 37th St", "319 W 38th St", "320 W 36th St", "326 W 37th St", "326 W 40th St",
+    "330 W 36th St", "330 W 40th St", "333 W 38th St", "334 W 40th St", "337 W 36th St",
+    "337 W 39th St", "338 W 36th St", "338 W 39th St", "341 W 36th St", "341 W 39th St",
+    "342 W 40th St", "343 W 39th St", "346 W 40th St", "350 W 39th St", "351 W 38th St",
+    "511 9th Ave", "523 8th Ave", "585 8th Ave", "618 8th Ave" ] },
+  { n: 2, place: "W 37th St & 6th Ave", detail: "W 35th–38th St, 5th–6th Ave — Herald Square", count: 23, lat: 40.75091, lng: -73.98472, hotels: [
+    "4 W 37th St", "11 W 37th St", "19 W 38th St", "21 W 37th St", "27 W 38th St",
+    "29 W 37th St", "30 W 39th St", "33 W 37th St", "34 W 38th St", "38 W 36th St",
+    "40 W 35th St", "43 W 35th St", "45 W 38th St", "48 W 36th St", "52 W 36th St",
+    "57 W 35th St", "58 W 39th St", "60 W 36th St", "60 W 37th St", "63 W 35th St",
+    "63 W 38th St", "400 5th Ave", "1020 Ave of the Americas" ] },
+  { n: 3, place: "W 46th St & Broadway", detail: "W 44th–48th St, Broadway–7th Ave — Times Square", count: 22, lat: 40.75782, lng: -73.98367, hotels: [
+    "109 W 45th St", "119 W 45th St", "120 W 44th St", "123 W 44th St", "125 W 45th St",
+    "126 W 46th St", "128 W 47th St", "129 W 46th St", "130 W 44th St", "132 W 45th St",
+    "132 W 47th St", "133 W 44th St", "137 W 45th St", "145 W 47th St", "150 W 48th St",
+    "153 W 44th St", "155 W 48th St", "157 W 47th St", "1535 Broadway", "1568 Broadway",
+    "701 7th Ave" ] },
+  { n: 4, place: "6th Ave & W 28th St", detail: "W 26th–30th St, Broadway–6th Ave — NoMad", count: 22, lat: 40.74619, lng: -73.99029, hotels: [
+    "29 W 28th St", "32 W 29th St", "39 W 27th St", "44 W 29th St", "105 W 28th St",
+    "116 W 28th St", "121 W 26th St", "121 W 28th St", "123 W 28th St", "124 W 29th St",
+    "127 W 28th St", "132 W 27th St", "132 W 28th St", "135 W 30th St", "140 W 28th St",
+    "815 Ave of the Americas", "835 Ave of the Americas", "1185 Broadway", "1186 Broadway",
+    "1227 Broadway" ] },
+  { n: 5, place: "W 48th St & 8th Ave", detail: "W 46th–50th St, 7th–8th Ave — Times Square shimoli", count: 20, lat: 40.76032, lng: -73.98579, hotels: [
+    "2 Times Square", "1567 Broadway", "1568 Broadway", "1601 Broadway", "218 W 50th St",
+    "219 W 46th St", "224 W 49th St", "224 W 50th St", "233 W 49th St", "234 W 48th St",
+    "235 W 46th St", "240 W 49th St", "305 W 48th St", "701 7th Ave", "711 7th Ave",
+    "763 8th Ave", "765 8th Ave", "767 8th Ave", "790 8th Ave", "791 8th Ave" ] }
 ];
 
 const map = L.map("map", { scrollWheelZoom: false }).setView([40.741, -73.995], 13);
@@ -165,18 +153,18 @@ const tochkaCluster = L.markerClusterGroup({
     let sum = 0;
     kids.forEach(m => { sum += m.options.tochkaCount; });
     return L.divIcon({
-      html: `<div class="tochka-cluster"><div class="tc-num">~${sum}</div><div class="tc-label">${kids.length} tochka</div></div>`,
+      html: `<div class="tochka-cluster"><div class="tc-num">${sum}</div><div class="tc-label">${kids.length} tochka</div></div>`,
       className: "", iconSize: [56, 56], iconAnchor: [28, 28]
     });
   }
 });
 TOCHKA.forEach(t => {
-  const listHtml = t.hotels.map(h => `<li><b>${h[0]}</b> — ${h[1]}</li>`).join("");
-  const popup = `<div class="tochka-popup"><b>Tochka ${t.n} — ${t.place}</b><br>${t.detail}<br><b>Mehmonxonalar: ~${t.count} ta</b><ul>${listHtml}</ul><span style="color:#6b7280;font-size:12px">Son taxminiy (~), ro'yxatda tekshirilgan hotellar.</span></div>`;
+  const listHtml = t.hotels.map(a => `<li>${a}</li>`).join("");
+  const popup = `<div class="tochka-popup"><b>Tochka ${t.n} — ${t.place}</b><br>${t.detail}<br><b>200 m radiusda: ${t.count} ta hotel binosi</b><ul>${listHtml}</ul><span style="color:#6b7280;font-size:12px">NYC Open Data (758 ta hotel binosi) asosida hisoblangan.</span></div>`;
   const m = L.marker([t.lat, t.lng], {
     tochkaCount: t.count,
     icon: L.divIcon({
-      html: `<div class="tochka-marker"><div class="tm-count">~${t.count}</div><div class="tm-name">Tochka ${t.n}</div></div>`,
+      html: `<div class="tochka-marker"><div class="tm-count">${t.count}</div><div class="tm-name">Tochka ${t.n}</div></div>`,
       className: "", iconSize: [58, 58], iconAnchor: [29, 29]
     })
   }).bindPopup(popup);
@@ -203,7 +191,7 @@ function renderTochkaList() {
   TOCHKA.forEach(t => {
     const div = document.createElement("div");
     div.className = "tochka-row";
-    div.innerHTML = `<div class="tochka-badge"><div class="tb-count">~${t.count}</div><div class="tb-name">Tochka ${t.n}</div></div><div><h3>${t.place}</h3><div class="meta">${t.detail}<br><b>~${t.count} ta mehmonxona</b> · ro'yxatda ${t.hotels.length} ta tekshirilgan</div></div>`;
+    div.innerHTML = `<div class="tochka-badge"><div class="tb-count">${t.count}</div><div class="tb-name">Tochka ${t.n}</div></div><div><h3>${t.place}</h3><div class="meta">${t.detail}<br><b>${t.count} ta hotel binosi</b> · 200 m radiusda</div></div>`;
     div.onclick = () => {
       tochkaCluster.zoomToShowLayer(tochkaMarkers[t.n], () => tochkaMarkers[t.n].openPopup());
     };
@@ -224,7 +212,7 @@ document.querySelectorAll(".filters button").forEach(btn => {
   };
 });
 
-// --- Rejimlar: Hotellar / Tochkalar ---
+// --- Rejimlar: Hotellar / TOP-5 Tochka ---
 let mode = "hotels";
 document.querySelectorAll(".modes button").forEach(btn => {
   btn.onclick = () => {
